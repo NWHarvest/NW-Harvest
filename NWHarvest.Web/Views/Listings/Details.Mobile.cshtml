@@ -1,0 +1,18 @@
+﻿@model NWHarvest.Web.ViewModels.ListingViewModel
+@{
+    ViewBag.Title = "Listing Details";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+
+<h3>@Model.UserName</h3>
+<hr />
+
+@Html.Partial("_ListingDetails", Model)
+<hr />
+@Html.Partial("_PickupLocation", Model.PickupLocation)
+<br />
+<p>
+    @Html.ActionLink("Edit", "Edit", "Listings", new { Id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Delete", "Delete", "Listings", new { Id = Model.Id }, new { @class = "btn btn-danger" })
+    @Html.ActionLink("Back", "Index", "Listings", null, new { @class = "btn btn-default" })
+</p>

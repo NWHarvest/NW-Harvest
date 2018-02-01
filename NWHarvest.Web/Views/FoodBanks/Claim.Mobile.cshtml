@@ -1,0 +1,17 @@
+﻿@model NWHarvest.Web.ViewModels.ClaimListingViewModel
+
+@{
+    ViewBag.Title = "Claim Form";
+    ViewBag.NavBarTitle = ViewBag.Title;
+    Model.Quantity = Model.Available;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 card">
+            <div class="card-body">
+                @Html.Partial("_ClaimForm", Model)
+            </div>
+        </div>
+    </div>
+</div>

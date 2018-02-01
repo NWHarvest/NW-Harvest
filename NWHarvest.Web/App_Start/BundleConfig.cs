@@ -8,6 +8,7 @@ namespace NWHarvest.Web
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            //BundleTable.EnableOptimizations = true;
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -21,6 +22,7 @@ namespace NWHarvest.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap-select.min.js",
                       "~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/respond.js"));
 
@@ -29,14 +31,11 @@ namespace NWHarvest.Web
                     "~/Scripts/DataTables/dataTables.responsive.js",
                     "~/Scripts/DataTables/dataTables.rowReorder.min.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/datepicker.css",
-                      "~/Content/site.css",
-                      "~/Content/DataTables/css/autoFill.foundation.css",
-                      "~/Content/DataTables/css/dataTables.responsive.css",
-                      "~/Content/DataTables/css/jquery-ui.css",
-                      "~/Content/DataTables/css/jquery.dataTables.css"));
+            bundles.Add(new StyleBundle("~/Content/css")
+                      .Include("~/Content/bootstrap.css", "~/Content/bootstrap-select.min.css","~/Content/datepicker.css")
+                      .Include("~/Content/DataTables/css/*.css", new CssRewriteUrlTransform())
+                      .Include("~/Content/site.css"));
+
         }
     }
 }

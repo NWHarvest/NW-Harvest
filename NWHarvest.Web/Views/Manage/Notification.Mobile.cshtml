@@ -1,0 +1,15 @@
+﻿@model NWHarvest.Web.ViewModels.NotificationViewModel
+
+@{
+    ViewBag.Title = "Update Notification";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+
+<h3>@Model.UserName</h3>
+<hr />
+
+@Html.Partial("_Notification")
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

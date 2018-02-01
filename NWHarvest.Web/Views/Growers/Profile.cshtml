@@ -1,0 +1,53 @@
+﻿@model NWHarvest.Web.ViewModels.GrowerViewModel
+
+@{
+    ViewBag.Title = "Profile";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("_GrowerDetail", Model)
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <h4>My Listings @Html.ActionLink("Create New", "Create", "Listings", null, new {@class="btn btn-xs btn-success" })</h4>
+            @Html.Partial("_GrowerListing", Model.Listings.ToList())
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                console.log('show tab');
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                .dataTable({
+                    "responsive": true,
+                    "bAutowidth": false,
+
+                    "columnDefs": [{
+                        targets: [1, 2, 3],
+                        render: function (data, type, row) {
+                            return type === 'display' && data.length > 10 ?
+                                data.substr(0, 10) + '…' :
+                                data;
+                        }
+                    }]
+
+                });
+
+        });
+    </script>
+}

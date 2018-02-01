@@ -4,19 +4,16 @@
     ViewBag.Title = "Growing Connections";
 }
 
+<style>
+    .body-content {
+        padding-top: 50px;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-3 text-center">
-        <br/>
-        <br/>
-        <br/>
         <p>
-            @Html.ActionLink("Grower Login", "Login", "Account", new {area = "", loginType = UserRoles.GrowerRole }, new {@class = "btn btn-primary", style = "width: 240px"})
-        </p>
-        <p>
-            @Html.ActionLink("Food Program Login", "Login", "Account", new {area = "", loginType = UserRoles.FoodBankRole }, new {@class = "btn btn-primary", style = "width: 240px"})
-        </p>
-        <p>
-            @Html.ActionLink("Admin Login", "Login", "Account", new {area ="", loginType = UserRoles.AdministratorRole }, new {@class = "btn btn-primary", style = "width: 240px"})
+            @Html.ActionLink("Login", "Login", "Account", new { area = "" }, new { @class = "btn btn-primary", style = "width: 240px" })
         </p>
         <p>
             @Html.ActionLink("Register Now!", "Register", "Account", new {area = ""}, new {@class = "btn btn-primary", style = "width: 240px"})

@@ -46,6 +46,11 @@ namespace NWHarvest.Web.Models
         [StringLength(2)]
         public string state { get; set; }
 
+        [Required]
+        [StringLength(50)]
+        [Display(Name = "County")]
+        public string county { get; set; }
+
         [DisplayName("Zip")]
         [StringLength(9)]
         public string zip { get; set; }
@@ -55,5 +60,7 @@ namespace NWHarvest.Web.Models
 
         [DisplayName("Grower")]
         public virtual Grower Grower { get; set; }
+
+        public virtual FoodBank FoodBank { get; set; }
     }
 }

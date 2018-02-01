@@ -1,0 +1,14 @@
+﻿@model NWHarvest.Web.ViewModels.UserViewModel
+
+<p>
+    <span class="strong">Password: </span>
+    *******
+</p>
+<p>
+    <span class="strong">Phone Number: </span>
+    @(Model.PhoneNumber ?? "None")
+</p>
+<p>
+    <span class="strong">Notification: </span>
+    @Model.NotificationPreference
+</p>

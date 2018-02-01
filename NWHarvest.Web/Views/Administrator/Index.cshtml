@@ -1,0 +1,81 @@
+﻿@using NWHarvest.Web.Enums
+@model NWHarvest.Web.ViewModels.AdministratorViewModel
+
+@{
+    ViewBag.Title = "Administrator";
+}
+
+<h2>Administrator</h2>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Users <span class="badge">@Model.NumberOfUsers</span></h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive dataTables_scroll" id="userTable">
+                    <thead>
+                        <tr>
+                            <th>User Type</th>
+                            <th class="text-center">WTD</th>
+                            <th class="text-center">MTD</th>
+                            <th class="text-center">YTD</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>@Html.ActionLink("Growers", "ManageUser", new { UserRole = UserRole.Grower }, new { @class = "" })</td>
+                        <td class="text-center">@Model.NumberOfGrowersWeekToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowersMonthToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowersYearToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowers</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.ActionLink("Foodbanks", "ManageUser", new { UserRole = UserRole.FoodBank }, new { @class = "" })</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksWeekToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksMonthToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksYearToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanks</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Listings <span class="badge">@Model.NumberOfListings</span></h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive dataTables_scroll" id="userTable">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>@Html.ActionLink("Available", "ManageListings", new { ListingStatus = ListingStatus.Available })</td>
+                        <td class="text-center">@Model.NumberOfAvailableListings</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.ActionLink("Partially Claimed", "ManageListings", new { ListingStatus = ListingStatus.PartiallyClaimed })</td>
+                        <td class="text-center">@Model.NumberOfPartiallyClaimedListings</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.ActionLink("Claimed", "ManageListings", new { ListingStatus = ListingStatus.Claimed })</td>
+                        <td class="text-center">@Model.NumberOfClaimedListings</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.ActionLink("Unavailable*", "ManageListings", new { ListingStatus = ListingStatus.Unavailable })</td>
+                        <td class="text-center">@Model.NumberOfUnavailableListings</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-footer">
+                *Unavailable: includes unclaimed expired listings
+            </div>
+        </div>
+    </div>
+</div>

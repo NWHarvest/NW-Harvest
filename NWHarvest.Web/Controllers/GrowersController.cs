@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using NWHarvest.Web.Helper;
 using NWHarvest.Web.Models;
+using Microsoft.AspNet.Identity;
+using NWHarvest.Web.ViewModels;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -15,108 +15,170 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Growers
+        [Authorize(Roles = "Grower")]
+        [ActionName("Profile")]
         public ActionResult Index()
         {
-            return View(db.Growers.ToList());
-        }
 
-        // GET: Growers/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
+            var vm = db.Growers
+                .Where(g => g.UserId == UserId)
+                .Include("PickupLocations")
+                .Include("Listings")
+                .Select(g => new GrowerViewModel
+                {
+                    Id = g.Id,
+                    Name = g.name,
+                    Email = g.email,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = g.address1,
+                        Address2 = g.address2,
+                        Address3 = g.address3,
+                        Address4 = g.address4,
+                        City = g.city,
+                        County = g.county,
+                        State = g.state,
+                        Zip = g.zip
+                    },
+                    IsActive = g.IsActive,
+                    NotificationPreference = g.NotificationPreference
+                })
+                .FirstOrDefault();
+
+            if (vm == null)
             {
                 return HttpNotFound();
             }
-            return View(grower);
-        }
 
-        // GET: Growers/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Growers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,phone,email,address1,address2,address3,address4,city,state,zip")] Grower grower)
-        {
-            if (ModelState.IsValid)
+            if (!vm.IsActive)
             {
-                db.Growers.Add(grower);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return View("DisabledUser");
             }
 
-            return View(grower);
+            vm.PickupLocations = db.PickupLocations
+                .Where(p => p.Grower.UserId == UserId)
+                .Select(p => new PickupLocationViewModel
+                {
+                    Id = p.id,
+                    Name = p.name,
+                    Comments = p.comments,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = p.address1,
+                        Address2 = p.address2,
+                        Address3 = p.address3,
+                        Address4 = p.address4,
+                        City = p.city,
+                        County = p.county,
+                        State = p.state,
+                        Zip = p.zip
+                    }
+                })
+                .ToList();
+
+            vm.Listings = db.Listings
+                .Where(l => l.ListerUserId == UserId)
+                .Select(l => new ViewModels.ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    HarvestDate = l.HarvestedDate,
+                    ExpirationDate = l.ExpirationDate,
+                    Comments = l.Comments,
+                    IsAvailable = l.IsAvailable,
+                    IsPickedUp = l.IsPickedUp,
+                    QuantityClaimed = l.QuantityClaimed,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Name = l.PickupLocation.name,
+                        Address = new AddressViewModel
+                        {
+                            City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
+                            Zip = l.PickupLocation.zip
+                        }
+                    }
+
+                }).ToList();
+
+            return View(vm);
         }
 
-        // GET: Growers/Edit/5
+        [Authorize(Roles = "Grower")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
+
+            var vm = db.Growers.Select(g => new GrowerEditViewModel
+            {
+                Id = g.Id,
+                Name = g.name,
+                Address = new AddressEditViewModel
+                {
+                    Address1 = g.address1,
+                    Address2 = g.address2,
+                    Address3 = g.address3,
+                    Address4 = g.address4,
+                    City = g.city,
+                    County = g.county,
+                    State = g.state,
+                    Zip = g.zip
+                },
+                IsActive = g.IsActive,
+                NotificationPreference = g.NotificationPreference
+            })
+            .Where(g => g.Id == id)
+            .FirstOrDefault();
+
+
+            if (vm == null)
             {
                 return HttpNotFound();
             }
-            return View(grower);
+
+            RegisterViewData();
+            return View(vm);
         }
 
-        // POST: Growers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,UserId,NotificationPreference,name,phone,email,address1,address2,address3,address4,city,state,zip,IsActive")] Grower grower)
+        [Authorize(Roles = "Grower")]
+        public ActionResult Edit(GrowerEditViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(grower).State = EntityState.Modified;
+                var grower = db.Growers.Find(vm.Id);
+                grower.name = vm.Name;
+                grower.address1 = vm.Address.Address1;
+                grower.address2 = vm.Address.Address2;
+                grower.address3 = vm.Address.Address3;
+                grower.address4 = vm.Address.Address4;
+                grower.city = vm.Address.City;
+                grower.county = vm.Address.County;
+                grower.state = vm.Address.State;
+                grower.zip = vm.Address.Zip;
+                grower.IsActive = vm.IsActive;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                return RedirectToAction(nameof(Profile), new { UserId = grower.UserId });
             }
-            return View(grower);
+
+            RegisterViewData();
+            return View(vm);
+        }
+        
+        public ActionResult Settings()
+        {
+            return RedirectToAction("Index", "Manage");
         }
 
-        // GET: Growers/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
-            {
-                return HttpNotFound();
-            }
-            return View(grower);
-        }
-
-        // POST: Growers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Grower grower = db.Growers.Find(id);
-            var aspNetUser = db.Users.Find(grower.UserId);
-            db.Growers.Remove(grower);
-            db.Users.Remove(aspNetUser);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        public string UserId => User.Identity.GetUserId();
 
         protected override void Dispose(bool disposing)
         {
@@ -126,5 +188,28 @@ namespace NWHarvest.Web.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #region Helpers
+        private void RegisterViewData()
+        {
+           ViewData["States"] = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Washington",
+                    Value = "WA",
+                    Selected = true
+                }
+            };
+            
+            ViewData["Counties"] = WashingtonState.GetCounties()
+                .Select(county => new SelectListItem
+                {
+                    Text = county,
+                    Value = county,
+                    Selected = false
+                }).ToList();
+        }
+        #endregion
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -5,10 +6,10 @@ namespace NWHarvest.Web.Models
 {
 
     [Table("FoodBank")]
-    public partial class FoodBank
+    public partial class FoodBank : BaseEntity
     {
         [Key]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [Required]
         public string UserId { get; set; }
@@ -51,6 +52,11 @@ namespace NWHarvest.Web.Models
         public string state { get; set; }
 
         [Required]
+        [StringLength(50)]
+        [Display(Name = "County")]
+        public string county { get; set; }
+
+        [Required]
         [StringLength(9)]
         [Display(Name = "Zip")]
         public string zip { get; set; }
@@ -61,5 +67,7 @@ namespace NWHarvest.Web.Models
         [Required]
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
+
+        public ICollection<PickupLocation> PickupLocations { get; set; }
     }
 }

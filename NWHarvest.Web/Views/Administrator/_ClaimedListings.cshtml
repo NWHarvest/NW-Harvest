@@ -1,0 +1,25 @@
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.AdministratorListingViewModel>
+@{
+    TempData["NotOrderableColumns"] = new int[] { 2, 3 };
+}
+<table class="table table-hover table-responsive" id="listingTable">
+    <thead>
+        <tr>
+            <th>Lister</th>
+            <th>Product</th>
+            <th>Available</th>
+            <th>Claimed</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Lister.Name</td>
+            <td>@item.Product</td>
+            <td>@item.AvailableQuantity</td>
+            <td>@item.ClaimedQuantity</td>
+        </tr>
+        }
+    </tbody>
+</table>

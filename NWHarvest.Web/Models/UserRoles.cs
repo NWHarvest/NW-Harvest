@@ -1,12 +1,13 @@
 ﻿namespace NWHarvest.Web.Models
 {
+    // deprecated use UserRole enum
     public static class UserRoles
     {
         public static string AdministratorRole
         {
             get
             {
-                return "Admin";
+                return "Administrator";
             }
         }
         public static string GrowerRole

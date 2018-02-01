@@ -1,0 +1,11 @@
+﻿@model NWHarvest.Web.ViewModels.RegisterViewModel
+@{
+    ViewBag.Title = "Register for Growing Connections";
+    ViewBag.NavBarTitle = "Register";    
+}
+
+@Html.Partial("_RegisterForm", Model)
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

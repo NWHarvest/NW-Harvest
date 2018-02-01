@@ -1,0 +1,11 @@
+﻿@model NWHarvest.Web.ViewModels.UserViewModel
+
+@{
+    ViewBag.Title = "Remove Phone Number";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+
+<h3><a href="@Model.ProfileUrl">@Html.DisplayFor(model => model.Name)</a></h3>
+<hr />
+
+@Html.Partial("_RemovePhoneNumber")

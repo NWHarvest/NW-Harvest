@@ -1,0 +1,16 @@
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.PickupLocationViewModel>
+
+@{
+    ViewBag.Title = $"{ViewBag.Name} Pickup Locations";
+}
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Add Location", "Create", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Back to Profile", nameof(Profile), ViewBag.BackToProfile as string, null, new { @class = "btn btn-primary" })
+</p>
+<div class="container-fluid">
+    <div class="row">
+        @Html.Partial("_PickupLocation", Model)
+    </div>
+</div>

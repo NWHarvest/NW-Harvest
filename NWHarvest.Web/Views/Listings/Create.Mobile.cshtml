@@ -1,0 +1,16 @@
+﻿@model NWHarvest.Web.ViewModels.ListingViewModel
+
+@{
+    ViewBag.Title = "Create Listing";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+
+<h3>@Model.UserName</h3>
+@Html.Partial("_CreateListingForm", Model)
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $('#harvestDateGroup').datepicker();
+        $('#expiresDateGroup').datepicker();
+    </script>
+}

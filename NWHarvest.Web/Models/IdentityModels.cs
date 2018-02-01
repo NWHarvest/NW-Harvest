@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -17,6 +16,9 @@ namespace NWHarvest.Web.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public FoodBank FoodBank { get; set; }
+        public Grower Grower { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -36,5 +38,23 @@ namespace NWHarvest.Web.Models
         public virtual DbSet<PickupLocation> PickupLocations { get; set; }
         public virtual DbSet<DisplayMessage> DisplayMessages { get; set; }
         public virtual DbSet<DisplayDescription> DisplayDescriptions { get; set; }
+        public virtual DbSet<FoodBankClaim> FoodBankClaims { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.Address1).HasColumnName("Address1"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.Address2).HasColumnName("Address2"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.City).HasColumnName("City"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.State).HasColumnName("State"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.County).HasColumnName("County"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.Zip).HasColumnName("Zip"));
+        }
     }
 }
